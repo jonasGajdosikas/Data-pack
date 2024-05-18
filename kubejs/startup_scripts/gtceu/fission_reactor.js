@@ -1,0 +1,40 @@
+GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
+    event.create('fission_reactor')
+    .category('solid_nuke')
+    .setEUIO('in')
+    .setMaxIOSize(1,1,1,1)
+})
+GTCEuStartupEvents.registry('gtceu:machine', event => {
+    event.create('fission_reactor', 'multiblock')
+        .rotationState(RotationState.NON_Y_AXIS)
+        .appearanceBlock(GTBlocks.CASING_PTFE_INERT)
+        .recipeTypes('fission_reactor')
+        .pattern(definition => FactoryBlockPattern.start()
+            .aisle('  iii      ','           ','           ','           ','           ','           ','           ','           ','           ','           ')
+            .aisle(' ihhhi     ','  hhh      ','  hhh      ','  hhh      ','  hhh      ','  hhh      ','  hhh      ','  III      ','  III      ','  III      ')
+            .aisle('ihhhhhissss',' hrrrh ssss',' hrrrh ssss',' hrrrh ssss',' hrrrh ssss',' hrrrh     ',' hRRRh     ',' IvvvI     ',' IaaaI     ',' IaaaI     ')
+            .aisle('ihhhhhissss',' hrrrh ssss',' hrrrh ssss',' hrrrh ssss',' hrrrh ssss',' hrrrh     ',' hRRRh     ',' IvvvI     ',' IaaaI     ',' IaaaI     ')
+            .aisle('ihhhhhissss',' hrrrtttttf',' hrrrh ssss',' hrrrtttttf',' hrrrh ssss',' hrrrh     ',' hRRRh     ',' IvvvI     ',' IaaaI     ',' IaaaI     ')
+            .aisle(' ihhhi     ','  hhh      ','  hhh      ','  hhh      ','  hhh      ','  hhh      ','  hhh      ','  III      ','  III      ','  III      ')
+            .aisle('  iki      ','           ','           ','           ','           ','           ','           ','           ','           ','           ')
+            .where('k', Predicates.controller(Predicates.blocks(definition.get())))
+            .where('I', Predicates.blocks(GTBlocks.CASING_INVAR_HEATPROOF.get()))
+            .where(' ', Predicates.any())
+            .where('a', Predicates.blocks("minecraft:air"))
+            .where('v', Predicates.blocks(GTBlocks.HEAT_VENT.get()))
+            .where('i', Predicates.blocks(GTBlocks.CASING_INVAR_HEATPROOF.get())
+                .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setExactLimit(1))
+                .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setExactLimit(1))
+                .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+            )
+            .build()
+        )
+        .workableCasingRenderer(
+            "gtceu:block/casings/solid/machine_casing_inert_ptfe",
+            "gtceu:block/multiblock/large_chemical_reactor",
+            false
+        )
+})
+GTCEuStartupEvents.registry('gtceu:material', event => {
+    GTMaterials.Steam.getProperty(PropertyKey.FLUID).storage.enqueueRegistration(GTFluidStorageKeys.PLASMA, new GTFluidBuilder())
+})
